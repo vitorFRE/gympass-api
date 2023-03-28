@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+  gym-api-pg:
+    image: 'bitnami/postgresql:latest'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRESQL_USERNAME=gymapi
+      - POSTGRESQL_PASSWORD=gymapi
+      - POSTGRESQL_DATABASE=apisolid
