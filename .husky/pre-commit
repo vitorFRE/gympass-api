@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+case "$OSTYPE" in 
+  msys*|cygwin*|mingw*)
+    # or possible 'bash on windows'
+    exec >/dev/console 2>&1;;
+  nt|win*)
+    exec >/dev/console 2>&1;;
+esac
+
+npx lint-staged
