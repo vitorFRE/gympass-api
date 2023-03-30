@@ -1,17 +1,21 @@
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 import { compare } from 'bcryptjs'
-import {expect,describe,it} from 'vitest'
+import {expect,describe,it, beforeEach} from 'vitest'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { RegisterUseCase } from './register'
 
+let usersRepository: InMemoryUsersRepository
+let sut: RegisterUseCase
+
 describe('Register use case', () => {
 
+beforeEach(() => {
+   usersRepository = new InMemoryUsersRepository()
+   sut = new RegisterUseCase(usersRepository)
+})
+
   it('Should allow user creation', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
-
-    const {user} = await registerUseCase.execute({
+    const {user} = await sut.execute({
       name: 'Lee Lins',
       email: 'lee777@link.com',
       password: '123456'
@@ -22,10 +26,7 @@ describe('Register use case', () => {
   })
 
   it('User password must be hashed', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
-    const {user} = await registerUseCase.execute({
+    const {user} = await sut.execute({
       name: 'Lee Lins',
       email: 'lee777@link.com',
       password: '123456'
@@ -40,19 +41,16 @@ describe('Register use case', () => {
   })
 
   it('Should prevent user from creating account with duplicate email address', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
     const email = 'lee779@link.com'
 
-    await registerUseCase.execute({
+    await sut.execute({
       name: 'Lee Lins',
       email: email,
       password: '123456'
     })
 
       
-    await expect(() => registerUseCase.execute({
+    await expect(() => sut.execute({
       name: 'Lee Lins',
       email: email,
       password: '123456'
