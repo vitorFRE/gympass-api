@@ -19,8 +19,8 @@ beforeEach(() => {
     id: 'aca-01',
     title: 'Academia 01',
     description: 'uma academia',
-    latitude: new Decimal(0),
-    longitude: new Decimal(0),
+    latitude: new Decimal(-16.446391),
+    longitude: new Decimal(-51.126203),
     phone: '123456789',
   })
 
@@ -36,8 +36,8 @@ afterEach(() => {
     const {checkIn} = await sut.execute({
       gymId: 'aca-01',
       userId: '123',
-      userLatitude: 0,
-      userLongitude: 0
+      userLatitude: -16.446391,
+      userLongitude: -51.126203
     })
     
 
@@ -51,15 +51,15 @@ it('Should not allow check in twice on the same day', async () => {
     await sut.execute({
       gymId: 'aca-01',
       userId: '123',
-      userLatitude: 0,
-      userLongitude: 0
+      userLatitude: -16.446391,
+      userLongitude: -51.126203
     })
 
     await expect(() => sut.execute({
       gymId: 'aca-01',
       userId: '123',
-      userLatitude: 0,
-      userLongitude: 0
+      userLatitude: -16.446391,
+      userLongitude: -51.126203
     })).rejects.toBeInstanceOf(Error)
     
   })
@@ -70,8 +70,8 @@ it('Should allow check in twice but in different days', async () => {
     await sut.execute({
       gymId: 'aca-01',
       userId: '123',
-      userLatitude: 0,
-      userLongitude: 0
+      userLatitude: -16.446391,
+      userLongitude: -51.126203
     })
 
   vi.setSystemTime(new Date(2021, 3, 1, 8, 0, 0))
@@ -79,13 +79,32 @@ it('Should allow check in twice but in different days', async () => {
     const {checkIn} = await sut.execute({
       gymId: 'aca-01',
       userId: '123',
-      userLatitude: 0,
-      userLongitude: 0
+      userLatitude: -16.446391,
+      userLongitude: -51.126203
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
     
   })
 
+  it('Must not allow check-in away from the gym', async () => {
+
+    gymsRepository.items.push({
+    id: 'aca-02',
+    title: 'Academia 01',
+    description: 'uma academia',
+    latitude: new Decimal(-16.446391),
+    longitude: new Decimal(-51.126203),
+    phone: '123456789',
+  })  
+
+   await expect(() => sut.execute({
+      gymId: 'aca-02',
+      userId: '123',
+      userLatitude: -16.444120,
+      userLongitude: -51.123316
+    })).rejects.toBeInstanceOf(Error)
+    
+  })
   
 })
