@@ -13,11 +13,11 @@ beforeEach(async () => {
   sut = new CheckInValidateUseCase(checkInRepository)
 
 
-  // vi.useFakeTimers()
+  vi.useFakeTimers()
 })
 
 afterEach(() => {
-  //vi.useRealTimers()
+  vi.useRealTimers()
 })
 
   it('Should allow to validate the check-in', async () => {
@@ -42,6 +42,23 @@ afterEach(() => {
       checkInId: 'Ine-0930'
     }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
+    
+  })
+
+  it('Should not be able to validate the check-in adter 20 minutes of creation', async () => {
+    vi.setSystemTime(new Date(2023, 0, 1, 14, 55))
+
+    const createdCheckIn = await checkInRepository.create({
+      user_id: '123',
+      gym_id: 'aca-01',
+    })
+
+    const twentyOneMinutesInMs = 21 * 60 * 1000
+    vi.advanceTimersByTime(twentyOneMinutesInMs)
+
+    await expect(() => sut.execute({
+      checkInId: createdCheckIn.id
+    })).rejects.toBeInstanceOf(Error)
     
   })
   
