@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Gym, Prisma } from "@prisma/client";
 import { FindManyNearByParams, GymsRepository } from "../gyms-repository";
 import { prisma } from "@/lib/prisma";
 
@@ -31,8 +31,13 @@ export class PrismaGymsRepository implements GymsRepository {
 
     return gyms
   }
-  async findManyNearby(params: FindManyNearByParams) {
-    throw new Error("Method not implemented.");
-  }
 
+  async findManyNearby({latitude, longitude}: FindManyNearByParams) {
+    const gyms = await prisma.$queryRaw<Gym[]>`
+      SELECT * FROM gyms
+      WHERE acos(sin(radians(${latitude})) * sin(radians(latitude)) + cos(radians(${latitude})) * cos(radians(latitude)) * cos(radians(${longitude}) - radians(longitude))) * 6371 <= 10
+    `
+
+    return gyms
+  }
 }
