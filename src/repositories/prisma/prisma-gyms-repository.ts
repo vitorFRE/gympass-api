@@ -12,7 +12,11 @@ export class PrismaGymsRepository implements GymsRepository {
     return gym
   }
   async create(data: Prisma.GymCreateInput) {
-    throw new Error("Method not implemented.");
+    const gym = await prisma.gym.create({
+      data
+    })
+
+    return gym
   }
   async searchMany(query: string, page: number) {
     throw new Error("Method not implemented.");
