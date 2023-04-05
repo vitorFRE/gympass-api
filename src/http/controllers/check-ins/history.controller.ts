@@ -3,7 +3,7 @@ import { makeSearchGymsUseCase } from "@/use-cases/factories/make-search-gyms-us
 import { FastifyRequest, FastifyReply } from "fastify"
 import { z } from "zod"
 
-export async function searchController(request: FastifyRequest, reply: FastifyReply)  {
+export async function historyController(request: FastifyRequest, reply: FastifyReply)  {
   const checkInHistoryQuerySchema = z.object ({
     query: z.string(),
     page: z.coerce.number().min(1).default(1),
