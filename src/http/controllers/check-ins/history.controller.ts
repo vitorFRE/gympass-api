@@ -1,5 +1,4 @@
 import { makeFetchUserCheckInHistoryUseCase } from "@/use-cases/factories/make-fetch-user-check-in-history-use-case"
-import { makeSearchGymsUseCase } from "@/use-cases/factories/make-search-gyms-use-case"
 import { FastifyRequest, FastifyReply } from "fastify"
 import { z } from "zod"
 
