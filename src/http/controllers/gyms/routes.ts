@@ -10,5 +10,5 @@ export async function gymsRoutes(app: FastifyInstance) {
   app.get('/gyms/search', searchController)
   app.get('/gyms/nearby', nearbyController)
 
-  app.post('gyms', createController)
+  app.post('/gyms', createController)
 }
